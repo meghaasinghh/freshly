@@ -1,11 +1,11 @@
-import { anthropic } from '@/lib/claude'
+import { groq } from '@/lib/claude'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   const { expiring, all } = await req.json()
 
-  const msg = await anthropic.messages.create({
-    model: 'claude-sonnet-4-6',
+  const msg = await groq.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
     max_tokens: 1500,
     messages: [{
       role: 'user',
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     }]
   })
 
-  const raw = (msg.content[0] as any).text
+  const raw = msg.choices[0].message.content!
     .replace(/```json|```/g, '')
     .trim()
 
